@@ -34,17 +34,20 @@ func translate {
 
 func rotate {
   para points, origin, degrees;
-  auto i, x, y, rpoints;
+  auto i, c, s, x, y, rpoints;
   
   /* Translate to origin */
   rpoints = translate(points, [-origin[1],-origin[2]]);
+
+  c = cos(degrees);
+  s = sin(degrees);
   
   /* Rotate clockwise about origin */
   for(i = 1; i < points#; i = i + 2) {
     x = rpoints[i];
     y = rpoints[i+1];
-    rpoints[i] = x*cos(degrees) - y*sin(degrees);
-    rpoints[i+1] = x*sin(degrees) + y*cos(degrees);
+    rpoints[i] = x*c - y*s;
+    rpoints[i+1] = x*s + y*c;
   }
   
   /* Tranlate to original location */
