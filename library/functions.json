@@ -122,6 +122,30 @@
 			},
 			"return": "Combobox object",
 			"description": "Creates a drop-down select box for the canvas"
-		}
+		},
+                "centre": {
+                        "parameters": {
+                                "[points]": "List of coordinates in the form [ x1,y1 , x2,y2 ] from the top left corner"
+                        },
+                        "return": "List of coordinate [x,y] from the top left corner",
+                        "description": "Finds the centre of a list of points"
+                },
+                "translate": {
+                        "parameters": {
+                                "[points]": "List of coordinates in the form [ x1,y1 , x2,y2 ] from the top left corner",
+                                "[vector]": "List [x,y] to translate list of points by"
+                        },
+                        "return": "List of coordinates in the form [ x1,y1 , x2,y2 ] from the top left corner",
+                        "description": "Translates a list of points by a vector"
+                },
+                "rotate": {
+                        "parameters": {
+                                "[points]": "List of coordinates in the form [ x1,y1 , x2,y2 ] from the top left corner",
+                                "[point]": "Point about which to rotate in the form [x,y]",
+                                "degrees": "Number of degrees to rotate clockwise"
+                        },
+                        "return": "List of points of the form [ x1,y1 , x2,y2 ] from the top left corner",
+                        "description": "Rotates a list of points about a point"
+                }
 	}
 }
