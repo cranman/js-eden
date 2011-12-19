@@ -327,7 +327,7 @@ func Slider { ${{
 
 ${{
 Slider.prototype.draw = function(context) {
-  var me = "canvas_" + this.name;
+/*  var me = "canvas_" + this.name;
   var me2 = this.name;
   var sli = $("#"+me).get(0);
 
@@ -347,5 +347,43 @@ Slider.prototype.draw = function(context) {
     sli.style.left = "" + this.x + "px";
     sli.style.top = "" + this.y + "px";
   }
+*/
+
+var me = "canvas_" + this.name;
+  var me2 = this.name;
+  var sli = $("#"+me).get(0);
+
+  if (sli === undefined) {
+    var can = $("#eden-content");
+
+var slihtml = $('<div id="'+me+'" style="position: absolute; left: '+ this.x +'px; top: '+ this.y +'px;"><label for="'+me+'-amount">Price range:</label><input type="text" id="'+me+'-amount" style="border:0; color:#f6931f; font-weight:bold;" /><div id="'+me+'-slider-range"></div></div>').appendTo(can);
+
+        $(function() {
+                $( "#"+me+"-slider-range" ).slider({
+			value: this.value,
+                        min: this.min,
+                        max: this.max,
+                        step: this.step,
+                        slide: function( event, ui ) {
+                                $( "#"+me+"-amount" ).val( "$" + ui.value );
+                        }
+                });
+                $( "#"+me+"-amount" ).val( "$" + $( "#"+me+"slider-range" ).slider( "values", 0 ) );
+        });
+
+
+    slihtml.get(0).togarbage = false;
+
+    //Initialise
+    root.lookup(me2 + "_value").assign(this.value);
+    console.log("wyf");
+  } else {
+    sli.togarbage = false;
+    sli.value = this.value;
+    sli.style.left = "" + this.x + "px";
+    sli.style.top = "" + this.y + "px";
+    console.log("asd");
+  }
+
 };
 }}$;
