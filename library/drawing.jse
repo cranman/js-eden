@@ -300,3 +300,54 @@ Combobox.prototype.draw = function(context) {
 }}$;
 
 
+##Slider
+
+${{
+Slider = function(name, max, min, step, value, x, y) {
+  this.name = name;
+  this.max = max;
+  this.min = min;
+  this.step = step;
+  this.value = value;
+  this.x = x;
+  this.y = y;
+}
+}}$;
+
+func Slider { ${{
+  var name = arguments[0];
+  var max = arguments[1];
+  var min = arguments[2];
+  var step = arguments[3];
+  var value = arguments[4];
+  var x = arguments[5];
+  var y = arguments[6];
+  return new Slider(name, max, min, step, value, x, y);
+}}$; }
+
+${{
+Slider.prototype.draw = function(context) {
+  var me = "canvas_" + this.name;
+  var me2 = this.name;
+  var sli = $("#"+me).get(0);
+
+  if (sli === undefined) {
+    var max = ""
+
+    var can = $("#eden-content");
+    var slihtml = $("<input id=\"" + me + "\" type=\"range\" style=\"position: absolute; left: " + this.x + "px; top: " + this.y +"px;\" max=\"" + this.max + "\" min=\"" + this.min + "\" step=\"" + this.step + "\" value=\"" + this.value + "\"></input>").change(function() {
+      root.lookup(me2 + "_value").assign(""+slihtml.get(0).value);
+    }).appendTo(can);
+
+    slihtml.get(0).togarbage = false;
+
+    //Initialise and coerce value into string
+    root.lookup(me2 + "_value").assign(""+this.value);
+  } else {
+    sli.togarbage = false;
+    sli.value =  root.lookup(me2 + "_value").value();	// Change value of slider as well
+    sli.style.left = "" + this.x + "px";
+    sli.style.top = "" + this.y + "px";
+  }
+};
+}}$;
