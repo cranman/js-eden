@@ -130,6 +130,7 @@
                                 "max": "max value of slider",
                                 "step": "Stepping value of slider",
                                 "value": "Initial starting value of slider",
+                                "orientation": "Orientation of the slider, either \"vertical\" or \"horizontal\"",
                                 "x": "X-coordinate",
                                 "y": "Y-coordinate"
                         },
