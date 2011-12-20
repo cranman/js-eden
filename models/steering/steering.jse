@@ -1,0 +1,81 @@
+flcorner is [100,100];
+frcorner is [200,100];
+rlcorner is [100,300];
+rrcorner is [200,300];
+
+steeringangle is steeringangle_value;
+
+s is Slider("steeringangle",-50,50,1,0,100,30);
+
+faxle is Line(flcorner[1],flcorner[2],frcorner[1],frcorner[2],"black");
+raxle is Line(rlcorner[1],rlcorner[2],rrcorner[1],rrcorner[2],"black");
+
+twidth = 10;
+tlength = 30;
+
+flwheelpoints is [flcorner[1]-twidth,flcorner[2]-tlength,flcorner[1],flcorner[2]-tlength,flcorner[1],flcorner[2]+tlength,flcorner[1]-twidth,flcorner[2]+tlength];
+frwheelpoints is [frcorner[1],frcorner[2]-tlength,frcorner[1]+twidth,frcorner[2]-tlength,frcorner[1]+twidth,frcorner[2]+tlength,frcorner[1],frcorner[2]+tlength];
+rlwheelpoints is [rrcorner[1],rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]+tlength,rrcorner[1],rrcorner[2]+tlength];
+rrwheelpoints is [rlcorner[1]-twidth,rlcorner[2]-tlength,rlcorner[1],rlcorner[2]-tlength,rlcorner[1],rlcorner[2]+tlength,rlcorner[1]-twidth,rlcorner[2]+tlength];
+
+flwheel is Polygon(flwheelpoints,"black"); 
+frwheel is Polygon(frwheelpoints,"black"); 
+rrwheel is Polygon(rrwheelpoints,"black");
+rlwheel is Polygon(rlwheelpoints,"black");
+
+
+proc _steeringangle : steeringangle{
+  if (steeringangle == 0) {
+    /* Straight ahead */
+    flwheel is Polygon(flwheelpoints,"black");
+    frwheel is Polygon(frwheelpoints,"black");
+  } else if (steeringangle_value < 0) {
+    /* Turning left */
+    EL is [lrodpoint[1],flcorner[2]];
+    ADL is frcorner[1] - flcorner[1];
+    AEL is EL[1] - flcorner[1];
+    DEL is ADL - AEL;
+    BEL is lrodpoint[2] - EL[2];
+    BDL is sqrt(pow(BEL,2)+pow(DEL,2));
+    KL is atan(BEL/DEL);
+    GL is acos((pow(BDL,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDL)*(srodlength)));
+    steeranglerightwheel is KL + GL + ackangle - 90;
+    
+    flwheel is Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
+    frwheel is Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
+  } else {
+    /* Turning right */
+    ER is [rrodpoint[1],flcorner[2]];
+    ADR is frcorner[1] - flcorner[1];
+    AER is frcorner[1] - ER[1];
+    DER is ADR - AER;
+    BER is rrodpoint[2] - ER[2];
+    BDR is sqrt(pow(BER,2)+pow(DER,2));
+    KR is atan(BER/DER);
+    GR is acos((pow(BDR,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDR)*(srodlength)));
+    steerangleleftwheel is KR + GR + ackangle - 90;
+    
+    flwheel is Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
+    frwheel is Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
+  }
+}
+
+centrerod is Line((flcorner[1]+frcorner[1])/2,(flcorner[2]+frcorner[2])/2,(rlcorner[1]+rrcorner[1])/2,(rlcorner[2]+rrcorner[2])/2,"black");
+
+wheelbase is (rlcorner[2]+rrcorner[2])/2 - (flcorner[2]+frcorner[2])/2;
+
+ackangle is atan(((frcorner[1]-flcorner[1])/2)/wheelbase);
+
+srodlength is tlength;
+
+tierodlength is (frcorner[1]-flcorner[1]) - 2*srodlength*sin(ackangle);
+
+lrodpoint is [srodlength*sin(ackangle-steeringangle)+flcorner[1],srodlength*cos(ackangle-steeringangle)+flcorner[2]];
+rrodpoint is [frcorner[1]-srodlength*sin(ackangle+steeringangle),frcorner[2]+srodlength*cos(ackangle+steeringangle)];
+
+tierod is Line(lrodpoint[1],lrodpoint[2],rrodpoint[1],rrodpoint[2],"blue");
+
+rrod is Line(flcorner[1],flcorner[2],lrodpoint[1],lrodpoint[2],"blue");
+lrod is Line(frcorner[1],frcorner[2],rrodpoint[1],rrodpoint[2],"blue");
+
+picture is [faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,s];

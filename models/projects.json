@@ -27,6 +27,13 @@
 			"year": "2011",
 			"description": "Port of 'The Inequality Game' game by Antony Harfield to JS-Eden",
 			"runfile": "models/numberLine/run.e"
-		}
+		},
+                {
+                        "name": "Ackerman Steering",
+                        "author": "Matt Cranham",
+                        "year": "2011",
+                        "description": "Model of Ackerman Steering on a stationary car",
+                        "runfile": "models/steering/run.e"
+                }
 	]
 }
