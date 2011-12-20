@@ -356,7 +356,8 @@ Slider.prototype.draw = function(context) {
     slihtml.get(0).togarbage = false;
 
     //Initialise
-    root.lookup(me2 + "_value").assign(this.value);
+    root.lookup(me2 + "_value").assign(value);
+    $( "#"+me+"-amount" ).val( value );
   } else {
     sli.togarbage = false;
     sli.value = $( "#"+me+"slider-range" ).slider( "values", 0 );
