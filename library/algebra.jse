@@ -26,7 +26,7 @@ func translate {
   
   for(i = 1; i < points#; i = i + 2) {
     append tpoints, points[i] + vector[1];
-    append tpoints, points[i+1] + vector[1];
+    append tpoints, points[i+1] + vector[2];
   }
   
   return tpoints;
