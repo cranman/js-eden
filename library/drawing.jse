@@ -303,10 +303,10 @@ Combobox.prototype.draw = function(context) {
 ##Slider
 
 ${{
-Slider = function(name, max, min, step, value, x, y) {
+Slider = function(name, min, max, step, value, x, y) {
   this.name = name;
-  this.max = max;
   this.min = min;
+  this.max = max;
   this.step = step;
   this.value = value;
   this.x = x;
@@ -316,73 +316,56 @@ Slider = function(name, max, min, step, value, x, y) {
 
 func Slider { ${{
   var name = arguments[0];
-  var max = arguments[1];
-  var min = arguments[2];
+  var min = arguments[1];
+  var max = arguments[2];
   var step = arguments[3];
   var value = arguments[4];
   var x = arguments[5];
   var y = arguments[6];
-  return new Slider(name, max, min, step, value, x, y);
+  return new Slider(name, min, max, step, value, x, y);
 }}$; }
 
 ${{
 Slider.prototype.draw = function(context) {
-/*  var me = "canvas_" + this.name;
+  var me = "canvas_" + this.name;
   var me2 = this.name;
   var sli = $("#"+me).get(0);
 
-  if (sli === undefined) {
-    var can = $("#eden-content");
-    var slihtml = $("<input id=\"" + me + "\" type=\"range\" style=\"position: absolute; left: " + this.x + "px; top: " + this.y +"px;\" max=\"" + this.max + "\" min=\"" + this.min + "\" step=\"" + this.step + "\" value=\"" + this.value + "\"></input>").change(function() {
-      root.lookup(me2 + "_value").assign(""+slihtml.get(0).value);
-    }).appendTo(can);
-
-    slihtml.get(0).togarbage = false;
-
-    //Initialise and coerce value into string
-    root.lookup(me2 + "_value").assign(""+this.value);
-  } else {
-    sli.togarbage = false;
-    sli.value =  root.lookup(me2 + "_value").value();	// Change value of slider as well
-    sli.style.left = "" + this.x + "px";
-    sli.style.top = "" + this.y + "px";
-  }
-*/
-
-var me = "canvas_" + this.name;
-  var me2 = this.name;
-  var sli = $("#"+me).get(0);
+  var value = this.value;
+  var max = this.max;
+  var min = this.min
+  var step = this.step;
 
   if (sli === undefined) {
     var can = $("#eden-content");
+    var slihtml = $('<div id="'+me+'" style="position: absolute; left: '+ this.x +'px; top: '+ this.y +'px;"><label for="'+me+'-amount">Value:</label><input type="text" id="'+me+'-amount" style="border:0; color:#f6931f; font-weight:bold;" /><div id="'+me+'-slider-range"></div></div>').appendTo(can);
 
-var slihtml = $('<div id="'+me+'" style="position: absolute; left: '+ this.x +'px; top: '+ this.y +'px;"><label for="'+me+'-amount">Price range:</label><input type="text" id="'+me+'-amount" style="border:0; color:#f6931f; font-weight:bold;" /><div id="'+me+'-slider-range"></div></div>').appendTo(can);
-
-        $(function() {
-                $( "#"+me+"-slider-range" ).slider({
-			value: this.value,
-                        min: this.min,
-                        max: this.max,
-                        step: this.step,
-                        slide: function( event, ui ) {
-                                $( "#"+me+"-amount" ).val( "$" + ui.value );
-                        }
-                });
-                $( "#"+me+"-amount" ).val( "$" + $( "#"+me+"slider-range" ).slider( "values", 0 ) );
-        });
-
+    $(function() {
+      $( "#"+me+"-slider-range" ).slider({
+        slide: function( event, ui ) {
+          $( "#"+me+"-amount" ).val( ui.value );
+          root.lookup(me2 + "_value").assign(ui.value);
+      }});
+      $( "#"+me+"-slider-range" ).slider( "option", "max", max );
+      $( "#"+me+"-slider-range" ).slider( "option", "min", min );
+      $( "#"+me+"-slider-range" ).slider( "option", "step", step );
+      $( "#"+me+"-slider-range" ).slider( "option", "value", value );
+      $( "#"+me+"-amount" ).val( "$" + $( "#"+me+"slider-range" ).slider( "values", 0 ) );
+    });
 
     slihtml.get(0).togarbage = false;
 
     //Initialise
     root.lookup(me2 + "_value").assign(this.value);
-    console.log("wyf");
   } else {
     sli.togarbage = false;
-    sli.value = this.value;
+    sli.value = $( "#"+me+"slider-range" ).slider( "values", 0 );
+    $( "#"+me+"-slider-range" ).slider( "option", "max", max );
+    $( "#"+me+"-slider-range" ).slider( "option", "min", min );
+    $( "#"+me+"-slider-range" ).slider( "option", "step", step );
+    $( "#"+me+"-slider-range" ).slider( "option", "value", value );
     sli.style.left = "" + this.x + "px";
     sli.style.top = "" + this.y + "px";
-    console.log("asd");
   }
 
 };
