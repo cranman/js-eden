@@ -5,7 +5,7 @@ rrcorner is [200,300];
 
 steeringangle is steeringangle_value;
 
-s is Slider("steeringangle",-50,50,1,0,100,30);
+s is Slider("steeringangle",-50,50,1,0,"horizontal",100,30);
 
 faxle is Line(flcorner[1],flcorner[2],frcorner[1],frcorner[2],"black");
 raxle is Line(rlcorner[1],rlcorner[2],rrcorner[1],rrcorner[2],"black");
