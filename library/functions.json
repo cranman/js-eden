@@ -123,6 +123,19 @@
 			"return": "Combobox object",
 			"description": "Creates a drop-down select box for the canvas"
 		},
+                "Slider": {
+                        "parameters": {
+                                "name": "for [name]_value",
+                                "min": "min value of slider",
+                                "max": "max value of slider",
+                                "step": "Stepping value of slider",
+                                "value": "Initial starting value of slider",
+                                "x": "X-coordinate",
+                                "y": "Y-coordinate"
+                        },
+                        "return": "Slider object",
+                        "description": "Creates a Slider object for the canvas"
+                },
                 "centre": {
                         "parameters": {
                                 "[points]": "List of coordinates in the form [ x1,y1 , x2,y2 ] from the top left corner"
