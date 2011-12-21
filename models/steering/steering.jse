@@ -1,7 +1,10 @@
-flcorner is [100,100];
-frcorner is [200,100];
-rlcorner is [100,300];
-rrcorner is [200,300];
+car is [100,100,200,100,100,300,200,300];
+
+flcorner is rotate([car[1],car[2]],centre(car),carangle);
+frcorner is rotate([car[3],car[4]],centre(car),carangle);
+rlcorner is rotate([car[5],car[6]],centre(car),carangle);
+rrcorner is rotate([car[7],car[8]],centre(car),carangle);
+
 
 steeringangle is steeringangle_value;
 
@@ -12,70 +15,102 @@ raxle is Line(rlcorner[1],rlcorner[2],rrcorner[1],rrcorner[2],"black");
 
 twidth = 10;
 tlength = 30;
+carangle is 0; /* straight ahead */
 
 flwheelpoints is [flcorner[1]-twidth,flcorner[2]-tlength,flcorner[1],flcorner[2]-tlength,flcorner[1],flcorner[2]+tlength,flcorner[1]-twidth,flcorner[2]+tlength];
 frwheelpoints is [frcorner[1],frcorner[2]-tlength,frcorner[1]+twidth,frcorner[2]-tlength,frcorner[1]+twidth,frcorner[2]+tlength,frcorner[1],frcorner[2]+tlength];
-rlwheelpoints is [rrcorner[1],rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]+tlength,rrcorner[1],rrcorner[2]+tlength];
-rrwheelpoints is [rlcorner[1]-twidth,rlcorner[2]-tlength,rlcorner[1],rlcorner[2]-tlength,rlcorner[1],rlcorner[2]+tlength,rlcorner[1]-twidth,rlcorner[2]+tlength];
+rrwheelpoints is [rrcorner[1],rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]+tlength,rrcorner[1],rrcorner[2]+tlength];
+rlwheelpoints is [rlcorner[1]-twidth,rlcorner[2]-tlength,rlcorner[1],rlcorner[2]-tlength,rlcorner[1],rlcorner[2]+tlength,rlcorner[1]-twidth,rlcorner[2]+tlength];
 
-flwheel is Polygon(flwheelpoints,"black"); 
-frwheel is Polygon(frwheelpoints,"black"); 
-rrwheel is Polygon(rrwheelpoints,"black");
-rlwheel is Polygon(rlwheelpoints,"black");
+flwheel is Polygon(rotate(flwheelpoints,flcorner,carangle),"black"); 
+frwheel is Polygon(rotate(frwheelpoints,frcorner,carangle),"black"); 
+rrwheel is Polygon(rotate(rrwheelpoints,rrcorner,carangle),"black");
+rlwheel is Polygon(rotate(rlwheelpoints,rlcorner,carangle),"black");
 
 
 proc _steeringangle : steeringangle{
   if (steeringangle == 0) {
     /* Straight ahead */
-    flwheel is Polygon(flwheelpoints,"black");
-    frwheel is Polygon(frwheelpoints,"black");
-  } else if (steeringangle_value < 0) {
+/*    flwheel is Polygon(flwheelpoints,"black");
+    frwheel is Polygon(frwheelpoints,"black"); */
+  } else if (steeringangle < 0) {
     /* Turning left */
-    EL is [lrodpoint[1],flcorner[2]];
-    ADL is frcorner[1] - flcorner[1];
-    AEL is EL[1] - flcorner[1];
+    EL is perpendintersect(flcorner,frcorner,lrodpoint);
+    ADL is sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
+    AEL is sqrt(pow(EL[1] - flcorner[1],2) + pow(EL[2] - flcorner[2],2));
     DEL is ADL - AEL;
-    BEL is lrodpoint[2] - EL[2];
+    BEL is sqrt(pow(lrodpoint[2] - EL[2],2) + pow(lrodpoint[1] - EL[1],2));
     BDL is sqrt(pow(BEL,2)+pow(DEL,2));
     KL is atan(BEL/DEL);
     GL is acos((pow(BDL,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDL)*(srodlength)));
     steeranglerightwheel is KL + GL + ackangle - 90;
-    
-    flwheel is Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
-    frwheel is Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
+
+    flwheel is Polygon(rotate(rotate(flwheelpoints,flcorner,steeringangle),flcorner,carangle),"black");
+    frwheel is Polygon(rotate(rotate(frwheelpoints,frcorner,-steeranglerightwheel),frcorner,carangle),"black");
   } else {
     /* Turning right */
-    ER is [rrodpoint[1],flcorner[2]];
-    ADR is frcorner[1] - flcorner[1];
-    AER is frcorner[1] - ER[1];
+    ER is perpendintersect(flcorner,frcorner,rrodpoint);
+    ADR is sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
+    AER is sqrt(pow(ER[1] - frcorner[1],2) + pow(ER[2] - frcorner[2],2));
     DER is ADR - AER;
-    BER is rrodpoint[2] - ER[2];
+    BER is sqrt(pow(rrodpoint[2] - ER[2],2) + pow(rrodpoint[1] - ER[1],2));
     BDR is sqrt(pow(BER,2)+pow(DER,2));
     KR is atan(BER/DER);
     GR is acos((pow(BDR,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDR)*(srodlength)));
     steerangleleftwheel is KR + GR + ackangle - 90;
     
-    flwheel is Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
-    frwheel is Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
+    flwheel is Polygon(rotate(rotate(flwheelpoints,flcorner,steerangleleftwheel),flcorner,carangle),"black");
+    frwheel is Polygon(rotate(rotate(frwheelpoints,frcorner,steeringangle),frcorner,carangle),"black");
   }
 }
 
+func perpendintersect {
+  para point1, point2, point3;
+  auto m1, m2, c1, c2, t1, t2, x, y;
+
+t1 = point2[1] - point1[1];
+t2 = point2[2] - point1[2];
+  
+if (t2 == 0) {
+  x = point3[1];
+  y = point2[2];
+} else if (t1 == 0) {
+  x = point2[1];
+  y = point3[2];
+} else {
+  m1 = t2/t1;
+  c1 = point2[2] - m1*point2[1];
+  m2 = -1/m1;
+  c2 = point3[2] - m2*point3[1];
+
+  x = (c2 - c1)/(m1 - m2);
+  y = m1*x + c1;
+}
+  
+  return [x,y];
+};
+
 centrerod is Line((flcorner[1]+frcorner[1])/2,(flcorner[2]+frcorner[2])/2,(rlcorner[1]+rrcorner[1])/2,(rlcorner[2]+rrcorner[2])/2,"black");
 
-wheelbase is (rlcorner[2]+rrcorner[2])/2 - (flcorner[2]+frcorner[2])/2;
+wheelbase is sqrt(pow(flcorner[2]-rlcorner[2],2)+pow(flcorner[1]-rlcorner[1],2));
 
-ackangle is atan(((frcorner[1]-flcorner[1])/2)/wheelbase);
+ackangle = atan(((frcorner[1]-flcorner[1])/2)/wheelbase);
 
 srodlength is tlength;
 
-tierodlength is (frcorner[1]-flcorner[1]) - 2*srodlength*sin(ackangle);
+ER is [100,100];
 
-lrodpoint is [srodlength*sin(ackangle-steeringangle)+flcorner[1],srodlength*cos(ackangle-steeringangle)+flcorner[2]];
-rrodpoint is [frcorner[1]-srodlength*sin(ackangle+steeringangle),frcorner[2]+srodlength*cos(ackangle+steeringangle)];
+tierodlength is sqrt(pow(frcorner[1]-flcorner[1],2) + pow(frcorner[2]-flcorner[2],2)) - 2*srodlength*sin(ackangle);
+
+lrodpoint is rotate([srodlength*sin(ackangle-steeringangle)+flcorner[1],srodlength*cos(ackangle-steeringangle)+flcorner[2]],flcorner,carangle);
+rrodpoint is rotate([frcorner[1]-srodlength*sin(ackangle+steeringangle),frcorner[2]+srodlength*cos(ackangle+steeringangle)],frcorner,carangle);
 
 tierod is Line(lrodpoint[1],lrodpoint[2],rrodpoint[1],rrodpoint[2],"blue");
 
 rrod is Line(flcorner[1],flcorner[2],lrodpoint[1],lrodpoint[2],"blue");
 lrod is Line(frcorner[1],frcorner[2],rrodpoint[1],rrodpoint[2],"blue");
 
-picture is [faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,s];
+
+circle is Circle(ER[1], ER[2],1, "blue","blue");
+
+picture is [faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,s,circle];
