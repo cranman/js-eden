@@ -131,7 +131,7 @@ func centreofturn {
   if (steeringangle < 0) {
     centrey = rlcorner[2] - scale*opp;
     centrex = rlcorner[1] - scale*adj;
-  } else {
+  } else if (steeringangle > 0) {
     centrey = rrcorner[2] + scale*opp;
     centrex = rrcorner[1] + scale*adj;
   }
@@ -163,71 +163,86 @@ proc _engine : engine_clicked {
 func drive {
   if (throttle_value == -1 && steeringangle < 0) {
     ## Reverse and turning left
-    after (1000) {
+    after (200) {
       turn = centreofturn();
-      car = rotate(car,turn,1);
-      flwheelpoints = rotate(flwheelpoints,turn,1);
-      frwheelpoints = rotate(frwheelpoints,turn,1);
-      rlwheelpoints = rotate(rlwheelpoints,turn,1);
-      rrwheelpoints = rotate(rrwheelpoints,turn,1);
+      if (!!(turn[1])) {
+        car = rotate(car,turn,5);
+        flwheelpoints = rotate(flwheelpoints,turn,5);
+        frwheelpoints = rotate(frwheelpoints,turn,5);
+        rlwheelpoints = rotate(rlwheelpoints,turn,5);
+        rrwheelpoints = rotate(rrwheelpoints,turn,5);
+      }
+       
       drive();
     }
   } else if (throttle_value == -1 && steeringangle == 0) {
     ## Reverse straight
-    after (1000) {
-      car = translate(car,[0,5]);
-      flwheelpoints = translate(flwheelpoints,[0,5]);
-      frwheelpoints = translate(frwheelpoints,[0,5]);
-      rlwheelpoints = translate(rlwheelpoints,[0,5]);
-      rrwheelpoints = translate(rrwheelpoints,[0,5]);
+    after (200) {
+      move = rotate([0,5],[0,0],carangle);
+      car = translate(car,move);
+      flwheelpoints = translate(flwheelpoints,move);
+      frwheelpoints = translate(frwheelpoints,move);
+      rlwheelpoints = translate(rlwheelpoints,move);
+      rrwheelpoints = translate(rrwheelpoints,move);
       drive();
     }
+
   } else if (throttle_value == -1 && steeringangle > 0) {
     ## Reverse and turning right
-    after (1000) {
+    after (200) {
       turn = centreofturn();
-      car = rotate(car,turn,-1);
-      flwheelpoints = rotate(flwheelpoints,turn,-1);
-      frwheelpoints = rotate(frwheelpoints,turn,-1);
-      rlwheelpoints = rotate(rlwheelpoints,turn,-1);
-      rrwheelpoints = rotate(rrwheelpoints,turn,-1);
+      if (!!(turn[1])) {
+        car = rotate(car,turn,-5);
+        flwheelpoints = rotate(flwheelpoints,turn,-5);
+        frwheelpoints = rotate(frwheelpoints,turn,-5);
+        rlwheelpoints = rotate(rlwheelpoints,turn,-5);
+        rrwheelpoints = rotate(rrwheelpoints,turn,-5);
+      }
+
       drive();
     }
   } else if (throttle_value == 0) {
     ## Stopped  
-    after (1000) {
+    after (200) {
       drive();
     }
   } else if (throttle_value == 1 && steeringangle < 0) {
     ## Forward and turning left
-    after (1000) {
+    after (200) {
       turn = centreofturn();
-      car = rotate(car,turn,-1);
-      flwheelpoints = rotate(flwheelpoints,turn,-1);
-      frwheelpoints = rotate(frwheelpoints,turn,-1);
-      rlwheelpoints = rotate(rlwheelpoints,turn,-1);
-      rrwheelpoints = rotate(rrwheelpoints,turn,-1);
+      if (!!(turn[1])) {
+        car = rotate(car,turn,-5);
+        flwheelpoints = rotate(flwheelpoints,turn,-5);
+        frwheelpoints = rotate(frwheelpoints,turn,-5);
+        rlwheelpoints = rotate(rlwheelpoints,turn,-5);
+        rrwheelpoints = rotate(rrwheelpoints,turn,-5);
+      }
+
       drive();
     }
   } else if (throttle_value == 1 && steeringangle == 0) {
     ## Forward straight
-    after (1000) {
-      car = translate(car,[0,-5]);
-      flwheelpoints = translate(flwheelpoints,[0,-5]);
-      frwheelpoints = translate(frwheelpoints,[0,-5]);
-      rlwheelpoints = translate(rlwheelpoints,[0,-5]);
-      rrwheelpoints = translate(rrwheelpoints,[0,-5]);
+    after (200) {
+      move = rotate([0,-5],[0,0],carangle);
+      car = translate(car,move);
+      flwheelpoints = translate(flwheelpoints,move);
+      frwheelpoints = translate(frwheelpoints,move);
+      rlwheelpoints = translate(rlwheelpoints,move);
+      rrwheelpoints = translate(rrwheelpoints,move);
       drive();
     }
   } else {
     ## Forward and turning right
-    after (1000) {
+    after (200) {
       turn = centreofturn();
-      car = rotate(car,turn,1);
-      flwheelpoints = rotate(flwheelpoints,turn,1);
-      frwheelpoints = rotate(frwheelpoints,turn,1);
-      rlwheelpoints = rotate(rlwheelpoints,turn,1);
-      rrwheelpoints = rotate(rrwheelpoints,turn,1);
+      if (!!(turn[1])) {
+        car = rotate(car,turn,5);
+        flwheelpoints = rotate(flwheelpoints,turn,5);
+        frwheelpoints = rotate(frwheelpoints,turn,5);
+        rlwheelpoints = rotate(rlwheelpoints,turn,5);
+        rrwheelpoints = rotate(rrwheelpoints,turn,5);
+      }
+
       drive();
     }
   }
