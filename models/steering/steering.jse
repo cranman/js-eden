@@ -68,6 +68,7 @@ proc _steeringangle : steeringangle {
     steeranglerightwheel = KL + GL + ackangle - 90;
     
     circ is Circle(CoT[1], CoT[2],2,"blue","red");
+    circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
     flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
     frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
     rwheelline is Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
@@ -88,6 +89,7 @@ proc _steeringangle : steeringangle {
     steerangleleftwheel = KR + GR + ackangle - 90;
     
     circ is Circle(CoT[1], CoT[2],2,"blue","red");
+    circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
     flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
     frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
     rwheelline is Line(rrcorner[1],rrcorner[2],CoT[1],CoT[2],"red");
@@ -146,25 +148,23 @@ func centreofturn {
 }
 
 ## Steering Slider
-s is Slider("steeringangle",-50,50,1,0,"horizontal",100,30);
+s is Slider("steeringangle",-50,50,1,0,"horizontal",100,50);
 steeringangle is steeringangle_value;
 
 turningradius is (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
 
 ## Throttle Slider
-throttle is Slider("throttle",-1,1,1,0,"vertical",50,100);
+throttle is Slider("throttle",-1,1,1,0,"vertical",50,110);
 
 ## Engine Controls
-engine is Button("engine","Start Engine",5,45,true);
-engine_clicked = false;
+engine is Button("engine","Start Engine",5,5,true);
+###engine_clicked = false;
 
 proc _engine : engine_clicked {
   if (engine_clicked) {
-    writeln("engine started");
     drive();
+    engine is Button("engine","Start Engine",5,5,false);
   }
-
-  engine is Button("engine","Start Engine",5,45,false);
 }
 
 ## Driving the car
@@ -248,7 +248,6 @@ func drive {
       turn = centreofturn();
       if (!!(turn[1])) {
         angle = 250/turningradius;
-writeln(angle);
         car = rotate(car,turn,angle);
         flwheelpoints = rotate(flwheelpoints,turn,angle);
         frwheelpoints = rotate(frwheelpoints,turn,angle);
@@ -261,6 +260,10 @@ writeln(angle);
   }
 }
 
+## Slider labels
+steeringlabel is Text("Steering Control",80,40,"black");
+throttlelabel is Text("Throttle Control",30,100,"black");
+
 ## Draw to screen
-picture is [circ,s,throttle,engine,faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,flwheelline,frwheelline,rwheelline];
+picture is [circ,s,throttle,steeringlabel,throttlelabel,circlabel,engine,faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,flwheelline,frwheelline,rwheelline];
 
