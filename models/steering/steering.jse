@@ -68,6 +68,9 @@ proc _steeringangle : steeringangle {
     steeranglerightwheel = KL + GL + ackangle - 90;
     
     circ is Circle(CoT[1], CoT[2],2,"blue","red");
+    flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
+    frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
+    rwheelline is Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
 
     flwheel is Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
     frwheel is Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
@@ -85,6 +88,9 @@ proc _steeringangle : steeringangle {
     steerangleleftwheel = KR + GR + ackangle - 90;
     
     circ is Circle(CoT[1], CoT[2],2,"blue","red");
+    flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
+    frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
+    rwheelline is Line(rrcorner[1],rrcorner[2],CoT[1],CoT[2],"red");
     
     flwheel is Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
     frwheel is Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
@@ -256,5 +262,5 @@ writeln(angle);
 }
 
 ## Draw to screen
-picture is [circ,s,throttle,engine,faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod];
+picture is [circ,s,throttle,engine,faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,flwheelline,frwheelline,rwheelline];
 
