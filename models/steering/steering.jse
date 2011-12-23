@@ -122,7 +122,7 @@ func perpendintersect {
 func centreofturn {
   auto hyp, opp, adj, scale, centrex, centrey;
   
-  hyp = (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));;
+  hyp = (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
   opp = rrcorner[2] - rlcorner[2];
   adj = rrcorner[1] - rlcorner[1];
   
@@ -142,6 +142,8 @@ func centreofturn {
 ## Steering Slider
 s is Slider("steeringangle",-50,50,1,0,"horizontal",100,30);
 steeringangle is steeringangle_value;
+
+turningradius is (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
 
 ## Throttle Slider
 throttle is Slider("throttle",-1,1,1,0,"vertical",50,100);
@@ -166,11 +168,12 @@ func drive {
     after (200) {
       turn = centreofturn();
       if (!!(turn[1])) {
-        car = rotate(car,turn,5);
-        flwheelpoints = rotate(flwheelpoints,turn,5);
-        frwheelpoints = rotate(frwheelpoints,turn,5);
-        rlwheelpoints = rotate(rlwheelpoints,turn,5);
-        rrwheelpoints = rotate(rrwheelpoints,turn,5);
+        angle = 250/turningradius;
+        car = rotate(car,turn,angle);
+        flwheelpoints = rotate(flwheelpoints,turn,angle);
+        frwheelpoints = rotate(frwheelpoints,turn,angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,angle);
       }
        
       drive();
@@ -192,11 +195,12 @@ func drive {
     after (200) {
       turn = centreofturn();
       if (!!(turn[1])) {
-        car = rotate(car,turn,-5);
-        flwheelpoints = rotate(flwheelpoints,turn,-5);
-        frwheelpoints = rotate(frwheelpoints,turn,-5);
-        rlwheelpoints = rotate(rlwheelpoints,turn,-5);
-        rrwheelpoints = rotate(rrwheelpoints,turn,-5);
+        angle = 250/turningradius;
+        car = rotate(car,turn,-angle);
+        flwheelpoints = rotate(flwheelpoints,turn,-angle);
+        frwheelpoints = rotate(frwheelpoints,turn,-angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,-angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,-angle);
       }
 
       drive();
@@ -211,11 +215,12 @@ func drive {
     after (200) {
       turn = centreofturn();
       if (!!(turn[1])) {
-        car = rotate(car,turn,-5);
-        flwheelpoints = rotate(flwheelpoints,turn,-5);
-        frwheelpoints = rotate(frwheelpoints,turn,-5);
-        rlwheelpoints = rotate(rlwheelpoints,turn,-5);
-        rrwheelpoints = rotate(rrwheelpoints,turn,-5);
+	angle = 250/turningradius;
+        car = rotate(car,turn,-angle);
+        flwheelpoints = rotate(flwheelpoints,turn,-angle);
+        frwheelpoints = rotate(frwheelpoints,turn,-angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,-angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,-angle);
       }
 
       drive();
@@ -236,11 +241,13 @@ func drive {
     after (200) {
       turn = centreofturn();
       if (!!(turn[1])) {
-        car = rotate(car,turn,5);
-        flwheelpoints = rotate(flwheelpoints,turn,5);
-        frwheelpoints = rotate(frwheelpoints,turn,5);
-        rlwheelpoints = rotate(rlwheelpoints,turn,5);
-        rrwheelpoints = rotate(rrwheelpoints,turn,5);
+        angle = 250/turningradius;
+writeln(angle);
+        car = rotate(car,turn,angle);
+        flwheelpoints = rotate(flwheelpoints,turn,angle);
+        frwheelpoints = rotate(frwheelpoints,turn,angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,angle);
       }
 
       drive();
