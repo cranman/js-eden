@@ -39,7 +39,7 @@ rrod is Line(flcorner[1],flcorner[2],lrodpoint[1],lrodpoint[2],"blue");
 lrod is Line(frcorner[1],frcorner[2],rrodpoint[1],rrodpoint[2],"blue");
 
 ## Angle of the car for tierods
-carangle is 0; 
+carangle is -atan((rlcorner[1]-flcorner[1])/(rlcorner[2]-flcorner[2]));; 
 
 ## Initially car points forward so wheels point forward as well
 flwheelpoints = [flcorner[1]-twidth,flcorner[2]-tlength,flcorner[1],flcorner[2]-tlength,flcorner[1],flcorner[2]+tlength,flcorner[1]-twidth,flcorner[2]+tlength];
@@ -166,7 +166,6 @@ func drive {
     writeln("1");
     after (1000) {
       turn = centreofturn();
-      carangle++;
       car = rotate(car,turn,1);
       flwheelpoints = rotate(flwheelpoints,turn,1);
       frwheelpoints = rotate(frwheelpoints,turn,1);
@@ -190,7 +189,6 @@ func drive {
     writeln("3");
     after (1000) {
       turn = centreofturn();
-      carangle++;
       car = rotate(car,turn,-1);
       flwheelpoints = rotate(flwheelpoints,turn,-1);
       frwheelpoints = rotate(frwheelpoints,turn,-1);
@@ -209,7 +207,6 @@ func drive {
     writeln("7");
     after (1000) {
       turn = centreofturn();
-      carangle++;
       car = rotate(car,turn,-1);
       flwheelpoints = rotate(flwheelpoints,turn,-1);
       frwheelpoints = rotate(frwheelpoints,turn,-1);
@@ -233,7 +230,6 @@ func drive {
     writeln("9");
     after (1000) {
       turn = centreofturn();
-      carangle++;
       car = rotate(car,turn,1);
       flwheelpoints = rotate(flwheelpoints,turn,1);
       frwheelpoints = rotate(frwheelpoints,turn,1);
