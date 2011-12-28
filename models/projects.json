@@ -32,8 +32,15 @@
                         "name": "Ackerman Steering",
                         "author": "Matt Cranham",
                         "year": "2011",
-                        "description": "Model of Ackerman Steering on a stationary car",
+                        "description": "Model of Ackerman Steering on a car",
                         "runfile": "models/steering/run.e"
+                },
+                {
+                        "name": "Parallel Parking",
+                        "author": "Matt Cranham",
+                        "year": "2011",
+                        "description": "Model of Parallel Parking of a car",
+                        "runfile": "models/parpar/run.e"
                 }
 	]
 }

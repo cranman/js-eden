@@ -1,0 +1,269 @@
+## Define the car
+car = [175,200,200,200,175,235,200,235];
+
+## Defines the corners of the car
+flcorner is [car[1],car[2]];
+frcorner is [car[3],car[4]];
+rlcorner is [car[5],car[6]];
+rrcorner is [car[7],car[8]];
+
+## Draw car
+faxle is Line(flcorner[1],flcorner[2],frcorner[1],frcorner[2],"black");
+raxle is Line(rlcorner[1],rlcorner[2],rrcorner[1],rrcorner[2],"black");
+centrerod is Line((flcorner[1]+frcorner[1])/2,(flcorner[2]+frcorner[2])/2,(rlcorner[1]+rrcorner[1])/2,(rlcorner[2]+rrcorner[2])/2,"black");
+
+## Length of the rear axle
+raxlelength is sqrt(pow(rrcorner[2]-rlcorner[2],2) + pow(rrcorner[1]-rlcorner[1],2));
+
+## Wheel properties
+twidth = 2.5;
+tlength = 7.5;
+topp is frcorner[2] - flcorner[2];
+tadj is frcorner[1] - flcorner[1];
+tscalew is twidth/raxlelength;
+tscalel is tlength/wheelbase;
+
+## Car properties
+wheelbase is sqrt(pow(flcorner[2]-rlcorner[2],2)+pow(flcorner[1]-rlcorner[1],2));
+srodlength is tlength;
+
+## Steering properties
+ackangle = atan(((frcorner[1]-flcorner[1])/2)/wheelbase);
+tierodlength is sqrt(pow(frcorner[1]-flcorner[1],2) + pow(frcorner[2]-flcorner[2],2)) - 2*srodlength*sin(ackangle);
+
+lrodpoint is rotate([srodlength*sin(ackangle-steeringangle)+flcorner[1],srodlength*cos(ackangle-steeringangle)+flcorner[2]],flcorner,carangle);
+rrodpoint is rotate([frcorner[1]-srodlength*sin(ackangle+steeringangle),frcorner[2]+srodlength*cos(ackangle+steeringangle)],frcorner,carangle);
+
+tierod is Line(lrodpoint[1],lrodpoint[2],rrodpoint[1],rrodpoint[2],"blue");
+rrod is Line(flcorner[1],flcorner[2],lrodpoint[1],lrodpoint[2],"blue");
+lrod is Line(frcorner[1],frcorner[2],rrodpoint[1],rrodpoint[2],"blue");
+
+## Angle of the car for tierods
+carangle is -atan2((rlcorner[1]-flcorner[1]),(rlcorner[2]-flcorner[2]));
+
+## Initially car points forward so wheels point forward as well
+flwheelpoints = [flcorner[1]-twidth,flcorner[2]-tlength,flcorner[1],flcorner[2]-tlength,flcorner[1],flcorner[2]+tlength,flcorner[1]-twidth,flcorner[2]+tlength];
+frwheelpoints = [frcorner[1],frcorner[2]-tlength,frcorner[1]+twidth,frcorner[2]-tlength,frcorner[1]+twidth,frcorner[2]+tlength,frcorner[1],frcorner[2]+tlength];
+rrwheelpoints = [rrcorner[1],rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]-tlength,rrcorner[1]+twidth,rrcorner[2]+tlength,rrcorner[1],rrcorner[2]+tlength];
+rlwheelpoints = [rlcorner[1]-twidth,rlcorner[2]-tlength,rlcorner[1],rlcorner[2]-tlength,rlcorner[1],rlcorner[2]+tlength,rlcorner[1]-twidth,rlcorner[2]+tlength];
+
+flwheel is Polygon(flwheelpoints,"black");
+frwheel is Polygon(frwheelpoints,"black");
+rrwheel is Polygon(rrwheelpoints,"black");
+rlwheel is Polygon(rlwheelpoints,"black");
+
+## Controls the steering of each wheel
+proc _steeringangle : steeringangle {
+  if (steeringangle < 0) {
+    ## Turning left
+    CoT = centreofturn();
+    EL = perpendintersect(flcorner,frcorner,lrodpoint);
+    ADL = sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
+    AEL = sqrt(pow(EL[1] - flcorner[1],2) + pow(EL[2] - flcorner[2],2));
+    DEL = ADL - AEL;
+    BEL = sqrt(pow(lrodpoint[2] - EL[2],2) + pow(lrodpoint[1] - EL[1],2));
+    BDL = sqrt(pow(BEL,2)+pow(DEL,2));
+    KL = atan(BEL/DEL);
+    GL = acos((pow(BDL,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDL)*(srodlength)));
+    steeranglerightwheel = KL + GL + ackangle - 90;
+    
+    circ is Circle(CoT[1], CoT[2],2,"blue","red");
+    circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
+    flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
+    frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
+    rwheelline is Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
+
+    flwheel is Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
+    frwheel is Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
+  } else if (steeringangle > 0) {
+    ## Turning right
+    CoT = centreofturn();
+    ER = perpendintersect(flcorner,frcorner,rrodpoint);
+    ADR = sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
+    AER = sqrt(pow(ER[1] - frcorner[1],2) + pow(ER[2] - frcorner[2],2));
+    DER = ADR - AER;
+    BER = sqrt(pow(rrodpoint[2] - ER[2],2) + pow(rrodpoint[1] - ER[1],2));
+    BDR = sqrt(pow(BER,2)+pow(DER,2));
+    KR = atan(BER/DER);
+    GR = acos((pow(BDR,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDR)*(srodlength)));
+    steerangleleftwheel = KR + GR + ackangle - 90;
+    
+    circ is Circle(CoT[1], CoT[2],2,"blue","red");
+    circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
+    flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
+    frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
+    rwheelline is Line(rrcorner[1],rrcorner[2],CoT[1],CoT[2],"red");
+    
+    flwheel is Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
+    frwheel is Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
+  }
+}
+
+## Finds the point of intersection of a line formed by point1 to point2 with a line from point3 perpendicular to this
+func perpendintersect {
+  para point1, point2, point3;
+  auto m1, m2, c1, c2, t1, t2, x, y;
+
+  t1 = point2[1] - point1[1];
+  t2 = point2[2] - point1[2];
+
+  if (t2 == 0) {
+    x = point3[1];
+    y = point2[2];
+  } else if (t1 == 0) {
+    x = point2[1];
+    y = point3[2];
+  } else {
+    m1 = t2/t1;
+    c1 = point2[2] - m1*point2[1];
+    m2 = -1/m1;
+    c2 = point3[2] - m2*point3[1];
+
+    x = (c2 - c1)/(m1 - m2);
+    y = m1*x + c1;
+  }
+
+  return [x,y];
+};
+
+## Find centre of turn
+func centreofturn {
+  auto hyp, opp, adj, scale, centrex, centrey;
+  
+  hyp = (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
+  opp = rrcorner[2] - rlcorner[2];
+  adj = rrcorner[1] - rlcorner[1];
+  
+  scale = hyp/raxlelength;
+  
+  if (steeringangle < 0) {
+    centrey = rlcorner[2] - scale*opp;
+    centrex = rlcorner[1] - scale*adj;
+  } else if (steeringangle > 0) {
+    centrey = rrcorner[2] + scale*opp;
+    centrex = rrcorner[1] + scale*adj;
+  }
+  
+  return [centrex, centrey];
+}
+
+## Steering Slider
+s is Slider("steeringangle",-50,50,1,0,"horizontal",100,50);
+steeringangle is steeringangle_value;
+
+turningradius is (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
+
+## Throttle Slider
+throttle is Slider("throttle",-1,1,1,0,"vertical",50,110);
+
+## Engine Controls
+engine is Button("engine","Start Engine",5,5,true);
+###engine_clicked = false;
+
+proc _engine : engine_clicked {
+  if (engine_clicked) {
+    drive();
+    engine is Button("engine","Start Engine",5,5,false);
+  }
+}
+
+## Driving the car
+func drive {
+  if (throttle_value == -1 && steeringangle < 0) {
+    ## Reverse and turning left
+    after (200) {
+      turn = centreofturn();
+      if (!!(turn[1])) {
+        angle = 250/turningradius;
+        car = rotate(car,turn,angle);
+        flwheelpoints = rotate(flwheelpoints,turn,angle);
+        frwheelpoints = rotate(frwheelpoints,turn,angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,angle);
+      }
+       
+      drive();
+    }
+  } else if (throttle_value == -1 && steeringangle == 0) {
+    ## Reverse straight
+    after (200) {
+      move = rotate([0,5],[0,0],carangle);
+      car = translate(car,move);
+      flwheelpoints = translate(flwheelpoints,move);
+      frwheelpoints = translate(frwheelpoints,move);
+      rlwheelpoints = translate(rlwheelpoints,move);
+      rrwheelpoints = translate(rrwheelpoints,move);
+      drive();
+    }
+
+  } else if (throttle_value == -1 && steeringangle > 0) {
+    ## Reverse and turning right
+    after (200) {
+      turn = centreofturn();
+      if (!!(turn[1])) {
+        angle = 250/turningradius;
+        car = rotate(car,turn,-angle);
+        flwheelpoints = rotate(flwheelpoints,turn,-angle);
+        frwheelpoints = rotate(frwheelpoints,turn,-angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,-angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,-angle);
+      }
+
+      drive();
+    }
+  } else if (throttle_value == 0) {
+    ## Stopped  
+    after (200) {
+      drive();
+    }
+  } else if (throttle_value == 1 && steeringangle < 0) {
+    ## Forward and turning left
+    after (200) {
+      turn = centreofturn();
+      if (!!(turn[1])) {
+	angle = 250/turningradius;
+        car = rotate(car,turn,-angle);
+        flwheelpoints = rotate(flwheelpoints,turn,-angle);
+        frwheelpoints = rotate(frwheelpoints,turn,-angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,-angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,-angle);
+      }
+
+      drive();
+    }
+  } else if (throttle_value == 1 && steeringangle == 0) {
+    ## Forward straight
+    after (200) {
+      move = rotate([0,-5],[0,0],carangle);
+      car = translate(car,move);
+      flwheelpoints = translate(flwheelpoints,move);
+      frwheelpoints = translate(frwheelpoints,move);
+      rlwheelpoints = translate(rlwheelpoints,move);
+      rrwheelpoints = translate(rrwheelpoints,move);
+      drive();
+    }
+  } else {
+    ## Forward and turning right
+    after (200) {
+      turn = centreofturn();
+      if (!!(turn[1])) {
+        angle = 250/turningradius;
+        car = rotate(car,turn,angle);
+        flwheelpoints = rotate(flwheelpoints,turn,angle);
+        frwheelpoints = rotate(frwheelpoints,turn,angle);
+        rlwheelpoints = rotate(rlwheelpoints,turn,angle);
+        rrwheelpoints = rotate(rrwheelpoints,turn,angle);
+      }
+
+      drive();
+    }
+  }
+}
+
+## Slider labels
+steeringlabel is Text("Steering Control",80,40,"black");
+throttlelabel is Text("Throttle Control",30,100,"black");
+
+## Draw to screen
+picture is [circ,s,throttle,steeringlabel,throttlelabel,circlabel,engine,faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,flwheelline,frwheelline,rwheelline];
+
