@@ -24,5 +24,5 @@ picture is [
 
 	p2flwheel, p2frwheel, p2rlwheel, p2rrwheel,
 
-	dist								## Slider for distance between cars
+	dist, distlabel								## Slider for distance between cars
 ];
