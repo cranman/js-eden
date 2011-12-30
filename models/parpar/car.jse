@@ -263,7 +263,3 @@ func drive {
 ## Slider labels
 steeringlabel is Text("Steering Control",80,40,"black");
 throttlelabel is Text("Throttle Control",30,100,"black");
-
-## Draw to screen
-picture is [circ,s,throttle,steeringlabel,throttlelabel,circlabel,engine,faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,tierod,rrod,lrod,flwheelline,frwheelline,rwheelline];
-
