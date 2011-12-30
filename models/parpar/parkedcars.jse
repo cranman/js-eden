@@ -1,7 +1,7 @@
 ## p1 prefixes relate to 1st car
 ## p2 prefixes relate to 2nd car
 
-p1car = [225,150,250,150,225,185,250,185];
+p1car = [225,160,250,160,225,195,250,195];
 p2car is translate(p1car,[0,60-dist_value]);
 dist_value = 0;
 

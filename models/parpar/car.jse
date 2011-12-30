@@ -1,5 +1,5 @@
 ## Define the car
-car = [175,135,200,135,175,170,200,170];
+car = [175,145,200,145,175,180,200,180];
 
 ## Defines the corners of the car
 flcorner is [car[1],car[2]];
