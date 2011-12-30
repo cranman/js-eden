@@ -154,7 +154,7 @@ steeringangle is steeringangle_value;
 turningradius is (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
 
 ## Throttle Slider
-throttle is Slider("throttle",-1,1,1,0,"vertical",50,110);
+throttle is Slider("throttle",-1,1,1,0,"vertical",50,120);
 
 ## Engine Controls
 engine is Button("engine","Start Engine",5,5,true);
@@ -262,4 +262,4 @@ func drive {
 
 ## Slider labels
 steeringlabel is Text("Steering Control",80,40,"black");
-throttlelabel is Text("Throttle Control",30,100,"black");
+throttlelabel is Text("Throttle Control",30,110,"black");

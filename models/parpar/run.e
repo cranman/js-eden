@@ -6,6 +6,8 @@ include("models/parpar/parking.jse");
 picture is [
 	winarea,							## Area to park into for win
 
+	swheelouter, swheelleft, swheelright, swheelbottom,
+
 	circ,s,throttle,steeringlabel,throttlelabel,circlabel,engine,	## Properties of moving car
 
 	faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,		## Moving car

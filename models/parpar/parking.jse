@@ -7,6 +7,19 @@ proc _car : car {
     (flcorner[2] >= winareapoints[2]) && (frcorner[2] >= winareapoints[4]) &&	## Front of car within winning area
     (frcorner[1] <= winareapoints[3]) && (rrcorner[1] <= winareapoints[5]) &&	## Right hand side of car in winning area
     (rlcorner[2] <= winareapoints[8]) && (rrcorner[2] <= winareapoints[6])) { 	## Rear of car within winning area
-      ${{ alert("WINNAR"); }}$;
+      ## Win condition successful parking
+      ${{ alert("YOU'RE WINNER!"); }}$;
+      throttle_value = 0;
   }
 }
+
+swheelcent = [350,60];
+swheelouter is Circle(swheelcent[1],swheelcent[2],40,"white","black");
+
+swheelrightp is rotate([swheelcent[1]+40,swheelcent[2]],swheelcent,9*steeringangle);
+swheelleftp is rotate([swheelcent[1]-40,swheelcent[2]],swheelcent,9*steeringangle);
+swheelbottomp is rotate([swheelcent[1],swheelcent[2]+40],swheelcent,9*steeringangle);
+
+swheelright is Line(swheelcent[1],swheelcent[2],swheelrightp[1],swheelrightp[2]);
+swheelleft is Line(swheelcent[1],swheelcent[2],swheelleftp[1],swheelleftp[2]);
+swheelbottom is Line(swheelcent[1],swheelcent[2],swheelbottomp[1],swheelbottomp[2]);

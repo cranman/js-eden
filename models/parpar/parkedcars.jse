@@ -47,4 +47,4 @@ p2rrwheel is Polygon(p2rrwheelpoints,"black");
 p2rlwheel is Polygon(p2rlwheelpoints,"black");
 
 ## Slider to control gap between the cars
-dist is Slider("dist",-250,0,1,0,"vertical",275,150);
+dist is Slider("dist",-250,0,1,0,"vertical",320,125);
