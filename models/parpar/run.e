@@ -4,6 +4,8 @@ include("models/parpar/parking.jse");
 
 ## Draw everything to screen from here
 picture is [
+	winarea,							## Area to park into for win
+
 	circ,s,throttle,steeringlabel,throttlelabel,circlabel,engine,	## Properties of moving car
 
 	faxle,raxle,flwheel,frwheel,rlwheel,rrwheel,centrerod,		## Moving car
@@ -20,7 +22,5 @@ picture is [
 
 	p2flwheel, p2frwheel, p2rlwheel, p2rrwheel,
 
-	dist,								## Slider for distance between cars
-
-	winarea								## Area to park into for win
+	dist								## Slider for distance between cars
 ];
