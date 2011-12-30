@@ -1,5 +1,6 @@
 include("models/parpar/car.jse");
 include("models/parpar/parkedcars.jse");
+include("models/parpar/parking.jse");
 
 ## Draw everything to screen from here
 picture is [
@@ -19,5 +20,7 @@ picture is [
 
 	p2flwheel, p2frwheel, p2rlwheel, p2rrwheel,
 
-	dist								## Slider for distance between cars
+	dist,								## Slider for distance between cars
+
+	winarea								## Area to park into for win
 ];

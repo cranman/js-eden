@@ -1,0 +1,2 @@
+winarea is Rectangle(p1rlcorner[1]-3.5,p1rlcorner[2]+10,p1rrcorner[1]-p1rlcorner[1]+7,p2frcorner[2]-p1rrcorner[2]-20,"#00FF00");
+
