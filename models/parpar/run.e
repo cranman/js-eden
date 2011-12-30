@@ -17,5 +17,7 @@ picture is [
 
 	p2faxle, p2raxle, p2centrerod, 					## Parked Car 2
 
-	p2flwheel, p2frwheel, p2rlwheel, p2rrwheel
+	p2flwheel, p2frwheel, p2rlwheel, p2rrwheel,
+
+	dist								## Slider for distance between cars
 ];
