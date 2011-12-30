@@ -2,7 +2,6 @@ winareapoints is [p1rlcorner[1]-3.5,p1rlcorner[2]+10,p1rrcorner[1]+3.5,p1rrcorne
 winarea is Polygon(winareapoints, "00FF00");
 
 proc _car : car {
-  writeln(car);
   if (
     (flcorner[1] >= winareapoints[1]) && (rlcorner[1] >= winareapoints[7]) &&	## Left hand side of car in winning area
     (flcorner[2] >= winareapoints[2]) && (frcorner[2] >= winareapoints[4]) &&	## Front of car within winning area
