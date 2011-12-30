@@ -59,8 +59,13 @@ Eden.executeFile = function (path) {
 			} catch(e) {
 				$('#error-window').addClass('ui-state-error').append("<div class=\"error-item\">## ERROR number " + eden.errornumber + ":<br>## " + path + "<br>" + e.message + "</div>\r\n\r\n").dialog({title:"EDEN Errors"});
 				eden.errornumber = eden.errornumber + 1;
-			  }
+			}
 		},
+		statusCode: {
+			403: function() {
+				$('#error-window').addClass('ui-state-error').append("<div class=\"error-item\">## ERROR number " + eden.errornumber + ":<br>## " + path + "<br>Unable to open file<br>Check file permissions</div>\r\n\r\n").dialog({title:"EDEN Errors"});
+				eden.errornumber = eden.errornumber + 1;
+			}},
 		cache: false,
 		async: false
 	});
