@@ -55,7 +55,7 @@ func Point { ${{
   var x = arguments[0];
   var y = arguments[1];
   return new Point(x, y);
-}}$ };
+}}$; };
 
 func Text { ${{
   var x = arguments[1];
