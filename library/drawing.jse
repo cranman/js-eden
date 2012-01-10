@@ -44,6 +44,19 @@ Text = function(txt, x, y, colour) {
 }
 }}$;
 
+${{
+Point = function(x, y) {
+  this.x = x;
+  this.y = y;
+}
+}}$;
+
+func Point { ${{
+  var x = arguments[0];
+  var y = arguments[1];
+  return new Point(x, y);
+}}$ };
+
 func Text { ${{
   var x = arguments[1];
   var y = arguments[2];
