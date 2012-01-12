@@ -52,51 +52,67 @@ frwheel is Polygon(frwheelpoints,"black");
 rrwheel is Polygon(rrwheelpoints,"black");
 rlwheel is Polygon(rlwheelpoints,"black");
 
+func calcSteering {
+  para rodpoint, corner;
+  auto E, AD, AE, DE, BE, BD, K, G, angle;
+  
+  E = perpendintersect(flcorner,frcorner,rodpoint);
+  AD = sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
+  AE = sqrt(pow(E[1] - corner[1],2) + pow(E[2] - corner[2],2));
+  DE = AD - AE;
+  BE = sqrt(pow(rodpoint[2] - E[2],2) + pow(rodpoint[1] - E[1],2));
+  BD = sqrt(pow(BE,2)+pow(DE,2));
+  K = atan(BE/DE);
+  G = acos((pow(BD,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BD)*(srodlength)));
+  angle = K + G + ackangle - 90;
+
+  return angle;
+}
+
+## Find centre of turn
+func centreofturn {
+  auto hyp, opp, adj, scale, centrex, centrey;
+  
+  hyp = (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
+  opp = rrcorner[2] - rlcorner[2];
+  adj = rrcorner[1] - rlcorner[1];
+  
+  scale = hyp/raxlelength;
+  if (steeringangle < 0) {
+    centrey = rlcorner[2] - scale*opp;
+    centrex = rlcorner[1] - scale*adj;
+  } else if (steeringangle > 0) {
+    centrey = rrcorner[2] + scale*opp;
+    centrex = rrcorner[1] + scale*adj;
+  }
+  
+  return [centrex, centrey];
+}
+
+func drawSteering {
+  CoT = centreofturn();
+  circ = Circle(CoT[1], CoT[2],2,"blue","red");
+  circlabel = Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
+  flwheelline = Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
+  frwheelline = Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
+  rwheelline = Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
+}
+
 ## Controls the steering of each wheel
 proc _steeringangle : steeringangle {
   if (steeringangle < 0) {
     ## Turning left
-    CoT = centreofturn();
-    EL = perpendintersect(flcorner,frcorner,lrodpoint);
-    ADL = sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
-    AEL = sqrt(pow(EL[1] - flcorner[1],2) + pow(EL[2] - flcorner[2],2));
-    DEL = ADL - AEL;
-    BEL = sqrt(pow(lrodpoint[2] - EL[2],2) + pow(lrodpoint[1] - EL[1],2));
-    BDL = sqrt(pow(BEL,2)+pow(DEL,2));
-    KL = atan(BEL/DEL);
-    GL = acos((pow(BDL,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDL)*(srodlength)));
-    steeranglerightwheel = KL + GL + ackangle - 90;
-    
-    circ is Circle(CoT[1], CoT[2],2,"blue","red");
-    circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
-    flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
-    frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
-    rwheelline is Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
-
-    flwheel is Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
-    frwheel is Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
+    steeranglerightwheel = calcSteering(lrodpoint, flcorner);
+    flwheel = Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
+    frwheel = Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
   } else if (steeringangle > 0) {
     ## Turning right
-    CoT = centreofturn();
-    ER = perpendintersect(flcorner,frcorner,rrodpoint);
-    ADR = sqrt(pow(frcorner[1] - flcorner[1],2) + pow(frcorner[2] - flcorner[2],2));
-    AER = sqrt(pow(ER[1] - frcorner[1],2) + pow(ER[2] - frcorner[2],2));
-    DER = ADR - AER;
-    BER = sqrt(pow(rrodpoint[2] - ER[2],2) + pow(rrodpoint[1] - ER[1],2));
-    BDR = sqrt(pow(BER,2)+pow(DER,2));
-    KR = atan(BER/DER);
-    GR = acos((pow(BDR,2)+pow(srodlength,2)-pow(tierodlength,2))/(2*(BDR)*(srodlength)));
-    steerangleleftwheel = KR + GR + ackangle - 90;
-    
-    circ is Circle(CoT[1], CoT[2],2,"blue","red");
-    circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
-    flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
-    frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
-    rwheelline is Line(rrcorner[1],rrcorner[2],CoT[1],CoT[2],"red");
-    
-    flwheel is Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
-    frwheel is Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
+    steerangleleftwheel = calcSteering(rrodpoint, frcorner);
+    flwheel = Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
+    frwheel = Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
   }
+
+  drawSteering();
 }
 
 ## Finds the point of intersection of a line formed by point1 to point2 with a line from point3 perpendicular to this
@@ -125,27 +141,6 @@ func perpendintersect {
 
   return [x,y];
 };
-
-## Find centre of turn
-func centreofturn {
-  auto hyp, opp, adj, scale, centrex, centrey;
-  
-  hyp = (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
-  opp = rrcorner[2] - rlcorner[2];
-  adj = rrcorner[1] - rlcorner[1];
-  
-  scale = hyp/raxlelength;
-  
-  if (steeringangle < 0) {
-    centrey = rlcorner[2] - scale*opp;
-    centrex = rlcorner[1] - scale*adj;
-  } else if (steeringangle > 0) {
-    centrey = rrcorner[2] + scale*opp;
-    centrex = rrcorner[1] + scale*adj;
-  }
-  
-  return [centrex, centrey];
-}
 
 ## Steering Slider
 s is Slider("steeringangle",-50,50,1,0,"horizontal",100,50);
