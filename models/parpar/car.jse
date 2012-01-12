@@ -1,6 +1,9 @@
 ## Define the car
 car = [175,145,200,145,175,180,200,180];
 
+throttle_value = 0;
+steeringangle_value = 0;
+
 ## Defines the corners of the car
 flcorner is [car[1],car[2]];
 frcorner is [car[3],car[4]];
@@ -90,12 +93,12 @@ func centreofturn {
 }
 
 func drawSteering {
-  CoT = centreofturn();
-  circ = Circle(CoT[1], CoT[2],2,"blue","red");
-  circlabel = Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
-  flwheelline = Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
-  frwheelline = Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
-  rwheelline = Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
+  CoT is centreofturn();
+  circ is Circle(CoT[1], CoT[2],2,"blue","red");
+  circlabel is Text("Centre of turn",CoT[1]-35,CoT[2]+15,"black");
+  flwheelline is Line(flcorner[1],flcorner[2],CoT[1],CoT[2],"red");
+  frwheelline is Line(frcorner[1],frcorner[2],CoT[1],CoT[2],"red");
+  rwheelline is Line(rlcorner[1],rlcorner[2],CoT[1],CoT[2],"red");
 }
 
 ## Controls the steering of each wheel
@@ -103,16 +106,14 @@ proc _steeringangle : steeringangle {
   if (steeringangle < 0) {
     ## Turning left
     steeranglerightwheel = calcSteering(lrodpoint, flcorner);
-    flwheel = Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
-    frwheel = Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
+    flwheel is Polygon(rotate(flwheelpoints,flcorner,steeringangle),"black");
+    frwheel is Polygon(rotate(frwheelpoints,frcorner,-steeranglerightwheel),"black");
   } else if (steeringangle > 0) {
     ## Turning right
     steerangleleftwheel = calcSteering(rrodpoint, frcorner);
-    flwheel = Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
-    frwheel = Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
+    flwheel is Polygon(rotate(flwheelpoints,flcorner,steerangleleftwheel),"black");
+    frwheel is Polygon(rotate(frwheelpoints,frcorner,steeringangle),"black");
   }
-
-  drawSteering();
 }
 
 ## Finds the point of intersection of a line formed by point1 to point2 with a line from point3 perpendicular to this
@@ -142,119 +143,102 @@ func perpendintersect {
   return [x,y];
 };
 
-## Steering Slider
-s is Slider("steeringangle",-50,50,1,0,"horizontal",100,50);
 steeringangle is steeringangle_value;
 
 turningradius is (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
 
-## Throttle Slider
-throttle is Slider("throttle",-1,1,1,0,"vertical",50,120);
+state is [car, steeringangle, throttle_value];
 
-## Engine Controls
-engine is Button("engine","Start Engine",5,5,true);
-###engine_clicked = false;
-
-proc _engine : engine_clicked {
-  if (engine_clicked) {
-    drive();
-    engine is Button("engine","Start Engine",5,5,false);
+${{ $('body').keydown(function(e) {
+  if ($('.ui-state-active').children().html() === "Canvas") {
+    if ($('input:focus').size() === 0) {
+      if (e.which == 37 && root.lookup('steeringangle_value').value() > -50) {
+        e.preventDefault();
+        root.lookup('steeringangle_value').assign(root.lookup('steeringangle_value').value()-1);
+      } else if (e.which == 38 && root.lookup('throttle_value').value() < 5) {
+        e.preventDefault();
+        root.lookup('throttle_value').assign(root.lookup('throttle_value').value()+1);
+      } else if (e.which == 39 && root.lookup('steeringangle_value').value() < 50) {
+        e.preventDefault();
+        root.lookup('steeringangle_value').assign(root.lookup('steeringangle_value').value()+1);
+      } else if (e.which == 40 && root.lookup('throttle_value').value() > -5) {
+        e.preventDefault();
+        root.lookup('throttle_value').assign(root.lookup('throttle_value').value()-1);
+      }
+    }
   }
-}
+}); }}$;
 
 ## Driving the car
-func drive {
-  if (throttle_value == -1 && steeringangle < 0) {
-    ## Reverse and turning left
-    after (200) {
+proc _drive : state {
+  after (100) {
+    if (throttle_value < 0 && steeringangle < 0) {
+      ## Reverse and turning left
       turn = centreofturn();
       if (!!(turn[1])) {
-        angle = 250/turningradius;
+        angle = 250/turningradius * abs(throttle_value)/5;
         car = rotate(car,turn,angle);
         flwheelpoints = rotate(flwheelpoints,turn,angle);
         frwheelpoints = rotate(frwheelpoints,turn,angle);
         rlwheelpoints = rotate(rlwheelpoints,turn,angle);
         rrwheelpoints = rotate(rrwheelpoints,turn,angle);
       }
-       
-      drive();
-    }
-  } else if (throttle_value == -1 && steeringangle == 0) {
-    ## Reverse straight
-    after (200) {
-      move = rotate([0,5],[0,0],carangle);
+    } else if (throttle_value < 0 && steeringangle == 0) {
+      ## Reverse straight
+      move = rotate([0,-(throttle_value*1)],[0,0],carangle);
       car = translate(car,move);
       flwheelpoints = translate(flwheelpoints,move);
       frwheelpoints = translate(frwheelpoints,move);
       rlwheelpoints = translate(rlwheelpoints,move);
       rrwheelpoints = translate(rrwheelpoints,move);
-      drive();
-    }
-
-  } else if (throttle_value == -1 && steeringangle > 0) {
-    ## Reverse and turning right
-    after (200) {
+    } else if (throttle_value < 0 && steeringangle > 0) {
+      ## Reverse and turning right
       turn = centreofturn();
       if (!!(turn[1])) {
-        angle = 250/turningradius;
+        angle = 250/turningradius * abs(throttle_value)/5;
         car = rotate(car,turn,-angle);
         flwheelpoints = rotate(flwheelpoints,turn,-angle);
         frwheelpoints = rotate(frwheelpoints,turn,-angle);
         rlwheelpoints = rotate(rlwheelpoints,turn,-angle);
         rrwheelpoints = rotate(rrwheelpoints,turn,-angle);
       }
-
-      drive();
-    }
-  } else if (throttle_value == 0) {
-    ## Stopped  
-    after (200) {
-      drive();
-    }
-  } else if (throttle_value == 1 && steeringangle < 0) {
-    ## Forward and turning left
-    after (200) {
+    } else if (throttle_value == 0) {
+      ## Stopped
+    } else if (throttle_value > 0 && steeringangle < 0) {
+      ## Forward and turning left
       turn = centreofturn();
       if (!!(turn[1])) {
-	angle = 250/turningradius;
+        angle = 250/turningradius * abs(throttle_value)/5;
         car = rotate(car,turn,-angle);
         flwheelpoints = rotate(flwheelpoints,turn,-angle);
         frwheelpoints = rotate(frwheelpoints,turn,-angle);
         rlwheelpoints = rotate(rlwheelpoints,turn,-angle);
         rrwheelpoints = rotate(rrwheelpoints,turn,-angle);
       }
-
-      drive();
-    }
-  } else if (throttle_value == 1 && steeringangle == 0) {
-    ## Forward straight
-    after (200) {
-      move = rotate([0,-5],[0,0],carangle);
+    } else if (throttle_value > 0 && steeringangle == 0) {
+      ## Forward straight
+      move = rotate([0,-(throttle_value*1)],[0,0],carangle);
       car = translate(car,move);
       flwheelpoints = translate(flwheelpoints,move);
       frwheelpoints = translate(frwheelpoints,move);
       rlwheelpoints = translate(rlwheelpoints,move);
       rrwheelpoints = translate(rrwheelpoints,move);
-      drive();
-    }
-  } else {
-    ## Forward and turning right
-    after (200) {
+    } else {
+      ## Forward and turning right
       turn = centreofturn();
       if (!!(turn[1])) {
-        angle = 250/turningradius;
+        angle = 250/turningradius * abs(throttle_value)/5;
         car = rotate(car,turn,angle);
         flwheelpoints = rotate(flwheelpoints,turn,angle);
         frwheelpoints = rotate(frwheelpoints,turn,angle);
         rlwheelpoints = rotate(rlwheelpoints,turn,angle);
         rrwheelpoints = rotate(rrwheelpoints,turn,angle);
       }
-
-      drive();
     }
   }
+  drawSteering();
 }
 
 ## Slider labels
-steeringlabel is Text("Steering Control",80,40,"black");
-throttlelabel is Text("Throttle Control",30,110,"black");
+##steeringlabel is Text("Steering Control",80,40,"black");
+##throttlelabel is Text("Throttle Control",30,110,"black");
