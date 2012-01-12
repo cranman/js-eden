@@ -16,9 +16,9 @@ proc _car : car {
     (pt_betwn_pts(p1flcorner,rlcorner,p1rrcorner)) ||   ## Rear left collides with 1st parked car
     (pt_betwn_pts(p1flcorner,rrcorner,p1rrcorner)) ||   ## Rear right collides with 1st parked car
     (pt_betwn_pts(p2flcorner,flcorner,p2rrcorner)) ||   ## Front left collides with 2nd parked car
-    (pt_betwn_pts(p2flcorner,flcorner,p2rrcorner)) ||   ## Front right collides with 2nd parked car
-    (pt_betwn_pts(p2flcorner,flcorner,p2rrcorner)) ||   ## Rear left collides with 2nd parked car
-    (pt_betwn_pts(p2flcorner,flcorner,p2rrcorner))) {   ## Rear right collides with 2nd parked car
+    (pt_betwn_pts(p2flcorner,frcorner,p2rrcorner)) ||   ## Front right collides with 2nd parked car
+    (pt_betwn_pts(p2flcorner,rlcorner,p2rrcorner)) ||   ## Rear left collides with 2nd parked car
+    (pt_betwn_pts(p2flcorner,rrcorner,p2rrcorner))) {   ## Rear right collides with 2nd parked car
       ## Lose condition collision with parked car
       ${{ alert("YOU'RE Loser!"); }}$;
       throttle_value = 0;
