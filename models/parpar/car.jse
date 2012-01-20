@@ -149,7 +149,7 @@ turningradius is (raxlelength/2) + wheelbase/(sin(abs(steeringangle)));
 
 state is [car, steeringangle, throttle_value];
 
-${{ $('body').keydown(function(e) {
+${{ $('html').keydown(function(e) {
   if ($('.ui-state-active').children().html() === "Canvas") {
     if ($('input:focus').size() === 0) {
       if (e.which == 37 && root.lookup('steeringangle_value').value() > -50) {
