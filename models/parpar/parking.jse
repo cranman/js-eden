@@ -20,7 +20,7 @@ proc _car : car {
     (pt_betwn_pts(p2flcorner,rlcorner,p2rrcorner)) ||   ## Rear left collides with 2nd parked car
     (pt_betwn_pts(p2flcorner,rrcorner,p2rrcorner))) {   ## Rear right collides with 2nd parked car
       ## Lose condition collision with parked car
-      ${{ alert("YOU'RE Loser!"); }}$;
+      ${{ alert("YOU'RE LOSER!"); }}$;
       throttle_value = 0;
   }
 }
